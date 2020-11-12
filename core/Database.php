@@ -1,4 +1,4 @@
-<?php namespace base;
+<?php namespace core;
 
 class Database
 {
