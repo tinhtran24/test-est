@@ -6,7 +6,7 @@ abstract class Controller
     protected function renderViewFile(string $name, array $variables = [])
     {
         $file = "views/$name.php";
-        if (!file_exists($file)) echo "Error: view file $name does not exist";
+        if (!file_exists($file)) echo "Error: views file $name does not exist";
 
         foreach ($variables as $name => $value) {
             // These local variables will be accessible in $file.

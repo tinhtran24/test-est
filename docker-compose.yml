@@ -1,16 +1,17 @@
 version: '3'
 services:
-  postgres:
-    build:
-      context: postgres
-    ports:
-      - 5432:5432
+  db:
+    image: mysql:5.7
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - 3306:3306
     environment:
-      - POSTGRES_DB=school
-      - POSTGRES_USER=enouvo
-      - POSTGRES_PASSWORD=123qwe
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: est-test
+      MYSQL_USER: est-test
+      MYSQL_PASSWORD: password
 
   php:
     build:
@@ -21,4 +22,6 @@ services:
     volumes:
       - ./src:/var/www/html/
     depends_on:
-      - postgres
+      - db
+volumes:
+  db_data:
