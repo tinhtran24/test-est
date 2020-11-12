@@ -1,0 +1,7 @@
+body {
+    padding-top: 1rem;
+}
+
+.table-header-nowrap {
+    white-space: nowrap;
+}

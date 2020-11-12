@@ -12,7 +12,7 @@ class Database
     }
 
     private function __construct() {
-        $this->mysqli = new \mysqli('localhost', 'root', '', 'est-test');
+        $this->mysqli = new \mysqli('localhost:3306', 'root', 'password', 'est-test');
         $this->mysqli->query('SET NAMES UTF8'); // Encoding fix
         if ($this->mysqli->connect_errno)
             throw new \Exception($this->mysqli->connect_error);

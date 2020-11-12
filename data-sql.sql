@@ -1,5 +1,5 @@
 CREATE TABLE `todos` (
-  `id` serial PRIMARY KEY,
+  `id` int(10) UNSIGNED NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   `work_name` varchar(255) NOT NULL,
