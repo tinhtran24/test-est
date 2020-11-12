@@ -22,7 +22,9 @@ class Database
     }
 
     /**
+     * @param string $sql
      * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function querySql(string $sql)
     {
