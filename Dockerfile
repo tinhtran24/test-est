@@ -3,4 +3,4 @@ RUN docker-php-ext-install mysqli
 
 COPY . /usr/src/est-test
 WORKDIR /usr/src/est-test
-CMD [ "php", "-S localhost:800" ]
+CMD [ "php", "-S localhost:8000" ]
