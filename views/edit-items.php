@@ -24,112 +24,20 @@ use models\TodoItemModel;
         <div class="col-md">
             <nav aria-label="...">
                 <ul class="pagination">
-                    <li class="page-item <?= $currentPage > 1 ? '' : 'disabled' ?>">
-                        <a class="page-link" href="?sort=<?= $sortField ?>&order=<?= $sortOrder ?>&p=1" tabindex="-1"
-                           aria-disabled="true">&laquo;</a>
-                    </li>
-                    <?php if ($currentPage - 1 > 0) : ?>
-                        <li class="page-item"><a class="page-link"
-                                                 href="?sort=<?= $sortField ?>&order=<?= $sortOrder ?>&p=<?= $currentPage - 1 ?>"><?= $currentPage - 1 ?></a>
-                        </li>
-                    <?php endif ?>
-                    <li class="page-item active" aria-current="page">
-                        <a class="page-link" href="#"><?= $currentPage ?></a>
-                    </li>
-                    <?php if ($currentPage + 1 <= $lastPage) : ?>
-                        <li class="page-item"><a class="page-link"
-                                                 href="?sort=<?= $sortField ?>&order=<?= $sortOrder ?>&p=<?= $currentPage + 1 ?>"><?= $currentPage + 1 ?></a>
-                        </li>
-                    <?php endif ?>
-                    <li class="page-item <?= $currentPage < $lastPage ? '' : 'disabled' ?>">
-                        <a class="page-link" href="?sort=<?= $sortField ?>&order=<?= $sortOrder ?>&p=<?= $lastPage ?>">&raquo;</a>
-                    </li>
+                    <div class="col-auto"><a href="/" class="btn btn-primary">Home</a></div>
                 </ul>
             </nav>
         </div>
         <?php if ($isAdmin) : ?>
-            <div class="col-auto"><a href="/logout" class="btn btn-primary">Logout</a></div>
+            <div class="col-auto"><a href="/logout" class="btn btn-primary">Logout</a></div>|
         <?php else : ?>
             <div class="col-auto"><a href="/login" class="btn btn-primary">Login</a></div>
         <?php endif ?>
     </div>
 
-    <h4>List Todo</h4>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>
-                <a href="?sort=username&order=<?= $sortField === 'work_name'
-                    ? ($sortOrder === 'asc' ? 'desc' : 'asc') : $sortOrder
-                ?>&p=<?= $currentPage ?>" class="table-header-nowrap">Work Name
-                    <?php if ($sortField === 'work_name') : ?>
-                        <i class="fa fa-caret-<?= $sortOrder === 'asc' ? 'up' : 'down' ?>"></i>
-                    <?php endif ?>
-                </a>
-            </th>
-            <th>
-                <a href="?sort=email&order=<?= $sortField === 'start_date'
-                    ? ($sortOrder === 'asc' ? 'desc' : 'asc')
-                    : $sortOrder ?>&p=<?= $currentPage ?>"
-                >StartDate
-                    <?php if ($sortField === 'start_date') : ?>
-                        <i class="fa fa-caret-<?= $sortOrder === 'asc' ? 'up' : 'down' ?>"></i>
-                    <?php endif ?>
-                </a>
-            </th>
-            <th>
-                <a href="?sort=email&order=<?= $sortField === 'end_date'
-                    ? ($sortOrder === 'asc' ? 'desc' : 'asc')
-                    : $sortOrder ?>&p=<?= $currentPage ?>"
-                >StartDate
-                    <?php if ($sortField === 'end_date') : ?>
-                        <i class="fa fa-caret-<?= $sortOrder === 'asc' ? 'up' : 'down' ?>"></i>
-                    <?php endif ?>
-                </a>
-            </th>
-            <th>
-                <a href="?sort=status&order=<?= $sortOrder === 'asc'
-                    ? 'desc' : 'asc' ?>&p=<?= $currentPage ?>"
-                >Status
-                    <?php if ($sortField === 'status') : ?>
-                        <i class="fa fa-caret-<?= $sortOrder === 'asc' ? 'down' : 'up' ?>"></i>
-                    <?php endif ?>
-                </a>
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($items as $item) : ?>
-            <tr data-item-id="<?= $item['id'] ?>">
-                <td class="align-middle"><span class="todo-item-text"><?= $item['work_name'] ?></span>
-                <td class="align-middle">
-                    <span class="todo-item-text"><?= $item['start_date'] ?></span>
-                </td>
-                <td class="align-middle">
-                    <span class="todo-item-text"><?= $item['end_date'] ?></span>
-                </td>
-                <td class="align-middle">
-                    <div class="form-check form-check-inline">
-                        <span class="form-check-label badge badge-success"><?= $item['status'] ?></span>
-                    </div>
-                </td>
-                <td class="align-middle">
-                    <?php if ($isAdmin) : ?>
-                        <a href="#" class="todo-item-text-remove">Delete</a>
-                        <a href="/edititems?id=<?= $item['id'] ?>" class="todo-item-text-edit-items">edit</a>
-                    <?php endif ?>
-                </td>
-            </tr>
-        <?php endforeach ?>
-        </tbody>
-    </table>
-
     <div id="todo-tbody"></div>
 
-    <h4>Add task</h4>
+    <h4>Edit task</h4>
     <?php if (in_array(TodoItemModel::ERROR_ALL_OK, $errors)) : ?>
         <div class="alert alert-success" role="alert">Task added successfully</div>
     <?php else : ?>
@@ -144,20 +52,20 @@ use models\TodoItemModel;
         <?php endif ?>
     <?php endif ?>
 
-    <form action="/item/add" method="post">
+    <form action="/item/update?id=<?= $item[0]['id'] ?>" method="post">
         <div class="form-row align-items-center">
             <div class="col-2">
-                <input type="text" name="work_name" class="form-control mb-2" placeholder="Work Name">
+                <input type="text" name="work_name" value=<?= $item[0]['work_name'] ?> class="form-control mb-2" placeholder="Work Name">
             </div>
             <div class="col-2">
-                <input type="date" name="start_date" class="form-control mb-2" placeholder="Start Date">
+                <input type="date" name="start_date" value=<?= $item[0]['start_date'] ?> class="form-control mb-2" placeholder="Start Date">
             </div>
             <div class="col-md">
-                <input type="date" name="end_date" class="form-control mb-2" placeholder="End date">
+                <input type="date" name="end_date" value=<?= $item[0]['end_date'] ?> class="form-control mb-2" placeholder="End date">
             </div>
             <div class="col-md">
                 <select name="status">
-                    <option value="" disabled selected>Choose option</option>
+                    <option value="<?= $item[0]['status'] ?>" disabled selected><?= $item[0]['status'] ?></option>
                     <option value="Planning">Planning</option>
                     <option value="Doing">Doing</option>
                     <option value="Complete">Complete</option>
@@ -186,6 +94,7 @@ use models\TodoItemModel;
                         window.location.replace("/login");
                     },
                     200: function () {
+                        window.alert('Delete success')
                         window.location.replace("/");
                     }
                 }
