@@ -10,7 +10,7 @@ use models\TodoItemModel;
 
 class IndexController extends Controller
 {
-    public function actionIndex(int $p = 1, string $sort = 'id', string $order = 'asc')
+    public function actionIndex(int $p = 1, string $sort = 'id', string $order = 'asc', ?int $month=0, ?int $day =0, ?int $year=0)
     {
         $model = new TodoItemModel;
         $onPageLimit = 3;
@@ -18,12 +18,15 @@ class IndexController extends Controller
         $itemsOffset = $paginator->calcItemsOffset();
 
         $this->renderViewfile('index', [
-            'items' => $model->loadPaginatedItems($itemsOffset, $onPageLimit, $sort, $order),
+            'items' => $model->loadPaginatedItems($itemsOffset, $onPageLimit, $sort, $order, $month, $day, $year),
             'errors' => (new FlashCookies(ItemController::ADD_ERRORS_COOKIE))->getData(),
             'currentPage' => $p,
             'lastPage' => $paginator->getLastPage(),
             'sortField' => $sort,
             'sortOrder' => $order,
+            'month' => $month,
+            'day' => $day,
+            'year' => $year,
             'isAdmin' => (new Auth)->isLogged()
         ]);
     }

@@ -41,13 +41,28 @@ class TodoItemModel
         int $offset,
         int $onPageLimit,
         string $sortField,
-        string $sortOrder
+        string $sortOrder,
+        ?int $month,
+        ?int $day,
+        ?int $year
     ): array
     {
+        $queryString = "SELECT id, work_name, start_date, end_date, status FROM todos ";
+        if (!empty($year) && $year != 0) {
+            $queryString = $queryString. " " . "WHERE EXTRACT(YEAR FROM start_date) = $year ";
+        }
+
+        if (!empty($year) && $year != 0 && !empty($month) && $month != 0) {
+            $queryString =  $queryString. " " ."WHERE EXTRACT(YEAR FROM start_date) = $year AND EXTRACT(MONTH FROM start_date) = $month ";
+        }
+        if (!empty($year) && $year != 0 && !empty($month) && $month != 0 && !empty($day) && $day != 0 ) {
+            $queryString =  $queryString. " " ."WHERE EXTRACT(YEAR FROM start_date) = $year AND EXTRACT(MONTH FROM start_date) = $month AND  EXTRACT(DAY start_date) > $day ";
+        }
+
+        $queryString =  $queryString. " " . "ORDER BY $sortField $sortOrder
+            LIMIT $offset, $onPageLimit";
         return $this->db->querySql(
-            "SELECT id, work_name, start_date, end_date, status FROM todos
-            ORDER BY $sortField $sortOrder
-            LIMIT $offset, $onPageLimit"
+            $queryString
         )->fetch_all(MYSQLI_ASSOC);
     }
 
