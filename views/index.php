@@ -53,13 +53,48 @@ use models\TodoItemModel;
             <div class="col-auto"><a href="/login" class="btn btn-primary">Login</a></div>
         <?php endif ?>
     </div>
-
+    <h4>Filter</h4>
+    <div class="form-row align-items-center" >
+        <span>
+      <select name="month" id="month" class="mdb-select md-form colorful-select dropdown-primary">
+        <?php for ($m = 1; $m <= 12; ++$m) {
+            $month_label = date('F', mktime(0, 0, 0, $m, 1));
+            ?>
+            <option value="<?php echo $month_label; ?>"><?php echo $month_label; ?></option>
+        <?php } ?>
+      </select>
+    </span>
+        <span>
+      <select name="day" id="day" class="mdb-select md-form">
+        <?php
+        $start_date = 1;
+        $end_date = 31;
+        for ($j = $start_date; $j <= $end_date; $j++) {
+            echo '<option value=' . $j . '>' . $j . '</option>';
+        }
+        ?>
+      </select>
+    </span>
+        <span>
+      <select name="year" id="year" class="mdb-select md-form">
+        <?php
+        $year = date('Y');
+        $min = $year - 60;
+        $max = $year;
+        for ($i = $max; $i >= $min; $i--) {
+            echo '<option value=' . $i . '>' . $i . '</option>';
+        }
+        ?>
+      </select>
+    </span>
+        <div class="col-auto"><a href="#" id="filter" class="btn btn-primary">Filter</a></div>
+    </div>
     <h4>List Todo</h4>
     <table class="table">
         <thead>
         <tr>
             <th>
-                <a href="?sort=username&order=<?= $sortField === 'work_name'
+                <a href="?sort=work_name&order=<?= $sortField === 'work_name'
                     ? ($sortOrder === 'asc' ? 'desc' : 'asc') : $sortOrder
                 ?>&p=<?= $currentPage ?>" class="table-header-nowrap">Work Name
                     <?php if ($sortField === 'work_name') : ?>
@@ -68,7 +103,7 @@ use models\TodoItemModel;
                 </a>
             </th>
             <th>
-                <a href="?sort=email&order=<?= $sortField === 'start_date'
+                <a href="?sort=start_date&order=<?= $sortField === 'start_date'
                     ? ($sortOrder === 'asc' ? 'desc' : 'asc')
                     : $sortOrder ?>&p=<?= $currentPage ?>"
                 >StartDate
@@ -78,7 +113,7 @@ use models\TodoItemModel;
                 </a>
             </th>
             <th>
-                <a href="?sort=email&order=<?= $sortField === 'end_date'
+                <a href="?sort=end_date&order=<?= $sortField === 'end_date'
                     ? ($sortOrder === 'asc' ? 'desc' : 'asc')
                     : $sortOrder ?>&p=<?= $currentPage ?>"
                 >StartDate
@@ -156,7 +191,7 @@ use models\TodoItemModel;
                 <input type="date" name="end_date" class="form-control mb-2" placeholder="End date">
             </div>
             <div class="col-md">
-                <select name="status">
+                <select name="status" class="mdb-select md-form">
                     <option value="" disabled selected>Choose option</option>
                     <option value="Planning">Planning</option>
                     <option value="Doing">Doing</option>
@@ -175,6 +210,37 @@ use models\TodoItemModel;
 
 <script>
     $(document).ready(function () {
+        var  setGetParameter = function (paramName, paramValue)
+        {
+            var url = window.location.href;
+            var hash = location.hash;
+            url = url.replace(hash, '');
+            if (url.indexOf(paramName + "=") >= 0)
+            {
+                var prefix = url.substring(0, url.indexOf(paramName + "="));
+                var suffix = url.substring(url.indexOf(paramName + "="));
+                suffix = suffix.substring(suffix.indexOf("=") + 1);
+                suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
+                url = prefix + paramName + "=" + paramValue + suffix;
+            }
+            else
+            {
+                if (url.indexOf("?") < 0)
+                    url += "?" + paramName + "=" + paramValue;
+                else
+                    url += "&" + paramName + "=" + paramValue;
+            }
+            window.location.href = url + hash;
+        }
+
+        $('#filter').click(function() {
+            var month = $('#month').val();
+            var year = $('#year').val();
+            var day = $('#day').val();
+            setGetParameter('month',month);
+            setGetParameter('year',year)
+            setGetParameter('day',day)
+        });
         var itemDelete = function (textInput) {
             var tableCell = $(this).parent();
             var itemId = tableCell.parent().data('item-id');
