@@ -31,11 +31,25 @@ class ItemController extends Controller
         }
 
         $model = new TodoItemModel;
-        if (($status = $_POST['status'] ?? null) !== null)
-            $model->updateStatus($id, $status);
-
         if (($newText = $_POST['work_name'] ?? null) !== null)
             $model->updateText($id, $newText);
+    }
+
+    public function actionUpdate(int $id)
+    {
+        if (!(new Auth)->isLogged()) {
+            http_response_code(403);
+            return;
+        }
+        $model = new TodoItemModel;
+        $model->workName = $_POST['work_name'] ?? '';
+        $model->startDate = $_POST['start_date'] ?? '';
+        $model->endDate = $_POST['end_date'] ?? '';
+        $model->status = $_POST['status'] ?? 'Planning';
+        $errors = $model->updateItemFromPost($id, $_POST);
+        if (!empty($errors)) $this->saveErrorsAndGoBack(self::ADD_ERRORS_COOKIE, $errors);
+        // There are no errors, then save ERROR_ALL_OK for callback.
+        $this->saveErrorsAndGoBack(self::ADD_ERRORS_COOKIE, [TodoItemModel::ERROR_ALL_OK]);
     }
 
     public function actionDelete(int $id)

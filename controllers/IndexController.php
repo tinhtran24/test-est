@@ -42,6 +42,19 @@ class IndexController extends Controller
         (new Router)->go('/');
     }
 
+    public function actionEditItems(int $id)
+    {
+        $model = new TodoItemModel;
+        if (empty($_POST)) {
+            $this->renderViewfile('edit-items', [
+                'errors' => (new FlashCookies(ItemController::ADD_ERRORS_COOKIE))->getData(),
+                'item' => $model->getById($id),
+            ]);
+            return;
+        }
+        (new Router)->go('/');
+    }
+
     public function actionLogout()
     {
         (new Auth)->logout();

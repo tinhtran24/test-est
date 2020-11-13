@@ -27,6 +27,16 @@ class TodoItemModel
         }
     }
 
+    public function getById(int $itemId): array
+    {
+        try {
+            return $this->db
+                ->querySql("SELECT id, work_name, start_date, end_date, status FROM todos WHERE id=$itemId")
+                ->fetch_all(MYSQLI_ASSOC);
+        } catch (\Exception $e) {
+        }
+    }
+
     public function loadPaginatedItems(
         int $offset,
         int $onPageLimit,
@@ -50,13 +60,31 @@ class TodoItemModel
         $startDate = $post['start_date'];
         $endDate = $post['end_date'];
         $status = $post['status'];
-
         $db = Database::getConnection();
         $db->querySql(
             "INSERT INTO todos (work_name, start_date, end_date, status) 
-            VALUES ('{$workName}', '{$startDate}', '$endDate', '${$status}')"
+            VALUES ('{$workName}', '{$startDate}', '{$endDate}', '$status')"
         );
+        return [];
+    }
 
+    public function updateItemFromPost(int $itemId, array $post): array
+    {
+        $errors = $this->validatePost($post);
+        if (!empty($errors)) return $errors;
+        $workName = $post['work_name'];
+        $startDate = $post['start_date'];
+        $endDate = $post['end_date'];
+        $status = $post['status'];
+        $db = Database::getConnection();
+        $db->querySql(
+            "UPDATE todos SET 
+                work_name='{$workName}',
+                start_date= '{$startDate}', 
+                end_date = '{$endDate}', 
+                status =  '$status' 
+                WHERE id = {$itemId}"
+        );
         return [];
     }
 
